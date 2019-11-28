@@ -21,4 +21,13 @@ class ProjectTest extends TestCase
 
     }
 
+    public function is_belongs_to_an_owner() {
+
+        $project = factory('App\Project')->create();
+
+        $this->assertInstanceOf('App\User', $project->owner);
+
+
+    }
+
 }
