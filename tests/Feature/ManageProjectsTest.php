@@ -6,36 +6,25 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class ProjectsTest extends TestCase
+class ManageProjectsTest extends TestCase
 {
 
     use WithFaker, RefreshDatabase;
     
     /** @test */
 
-    public function guests_cannot_create_projects() {
+    public function guests_cannot_manage_projects() {
 
-        //$this->withoutExceptionHandling();
+        $project = factory('App\Project')->create(); // given we have a project
 
-        $attributes = factory('App\Project')->raw();
+        //$attributes = factory('App\Project')->raw();
 
-        $this->post('/projects', $attributes)->assertRedirect('login');
+        $this->get('/projects')->assertRedirect('login'); // if you try to access the dashboard or index as guest of all projects you should be redirected
+        $this->get('/projects/create')->assertRedirect('login'); // if you try to access the create project page as guest you should be redirected
+        $this->post('/projects', $project->toArray())->assertRedirect('login'); // if you try to persist new project to the database as guest you should be redirected
+        $this->get($project->path())->assertRedirect('login'); // if you try to access the project specifically as guest you should be redirected
 
-    } 
-    
-    /** @test */
-
-    public function guests_cannot_view_projects() {
-
-        $this->get('/projects')->assertRedirect('login');
-
-    } 
-    
-    /** @test */
-
-    public function guests_cannot_view_a_single_project() {
-
-        $project = factory('App\Project')->create();
+        
 
         $this->get($project->path())->assertRedirect('login');
 
@@ -48,6 +37,8 @@ class ProjectsTest extends TestCase
         $this->withoutExceptionHandling(); //whenever error is thrown, show us the exact error dont try to handle it
 
         $this->actingAs(factory('App\User')->create());
+
+        $this->get('/projects/create')->assertStatus(200);
 
         $attributes = [
 
