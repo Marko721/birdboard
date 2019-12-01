@@ -42,6 +42,5 @@ class User extends Authenticatable
         return $this->hasMany('App\Project', 'owner_id');
 
 
-
     }
 }
