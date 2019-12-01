@@ -12,7 +12,6 @@ class ProjectTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-
     public function it_has_a_path() {
 
         $project = factory('App\Project')->create();
@@ -21,6 +20,7 @@ class ProjectTest extends TestCase
 
     }
 
+    /** @test */
     public function is_belongs_to_an_owner() {
 
         $project = factory('App\Project')->create();
@@ -29,5 +29,20 @@ class ProjectTest extends TestCase
 
 
     }
+
+    /** @test */
+    public function it_can_add_a_task() {
+
+        $project = factory('App\Project')->create();
+
+        $task = $project->addTask('Test task');
+
+        $this->assertCount(1, $project->tasks);
+        $this->assertTrue($project->tasks->contains($task));
+
+
+    }
+
+
 
 }

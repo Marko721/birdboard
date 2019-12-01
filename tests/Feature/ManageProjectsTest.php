@@ -36,7 +36,7 @@ class ManageProjectsTest extends TestCase
 
         $this->withoutExceptionHandling(); //whenever error is thrown, show us the exact error dont try to handle it
 
-        $this->actingAs(factory('App\User')->create());
+        $this->signIn();
 
         $this->get('/projects/create')->assertStatus(200);
 
@@ -59,7 +59,7 @@ class ManageProjectsTest extends TestCase
 
     public function a_user_can_view_their_project() {
 
-        $this->be(factory('App\User')->create());
+        $this->signIn();
 
         $this->withoutExceptionHandling();
 
@@ -76,7 +76,7 @@ class ManageProjectsTest extends TestCase
 
     public function an_authenticated_user_cannot_view_the_projects_of_others() {
 
-        $this->be(factory('App\User')->create());
+        $this->signIn();
 
         $project = factory('App\Project')->create();
 
@@ -89,7 +89,8 @@ class ManageProjectsTest extends TestCase
 
     public function a_project_requires_a_title() {
 
-        $this->actingAs(factory('App\User')->create()); //create a brand new person and set that as an authenticated
+        $this->signIn();
+        //$this->actingAs(factory('App\User')->create()); //create a brand new person and set that as an authenticated
 
         $attributes = factory('App\Project')->raw(['title' => '']); //ensure that the title is an empty string ep.3
 
@@ -101,7 +102,7 @@ class ManageProjectsTest extends TestCase
 
     public function a_project_requires_a_description() {
 
-        $this->actingAs(factory('App\User')->create());
+        $this->signIn();
 
         $attributes = factory('App\Project')->raw(['description' => '']);
 
