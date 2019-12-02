@@ -9,6 +9,8 @@ class Task extends Model
     
     protected $guarded = [];
 
+    protected $touches = ['project'];//references any belongsTo relationships
+
     public function project() {
 
         return $this->belongsTo('App\Project');

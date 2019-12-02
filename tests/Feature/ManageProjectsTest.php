@@ -38,24 +38,25 @@ class ManageProjectsTest extends TestCase
 
         $this->withoutExceptionHandling(); //whenever error is thrown, show us the exact error dont try to handle it
 
-        $this->signIn();
+        $this->signIn(); // given we sign in a user
 
         $this->get('/projects/create')->assertStatus(200);
 
         $attributes = [
 
             'title' => $this->faker->sentence,
-            'description' => $this->faker->paragraph
+            'description' => $this->faker->paragraph,
+            'notes' => 'General notes here'
 
         ];
 
-        $response = $this->post('/projects', $attributes);
-        $project = Project::where($attributes)->first();
-        $response->assertRedirect($project->path());
+        $response = $this->post('/projects', $attributes); // if i try to create a new project
+        $project = Project::where($attributes)->first(); 
+        $response->assertRedirect($project->path()); // assert im being redirected to project page
 
-        $this->assertDatabaseHas('projects', $attributes);
+        $this->assertDatabaseHas('projects', $attributes); // and project was saved to the database
 
-        $this->get('/projects')->assertSee($attributes['title']);
+        $this->get('/projects')->assertSee($attributes['title']); //if i go to the dashboard i should see aswell
 
     }
 
