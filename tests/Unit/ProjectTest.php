@@ -16,7 +16,7 @@ class ProjectTest extends TestCase
 
         $project = factory('App\Project')->create();
 
-        $this->assertEquals('/projects/' . $project->id, $project->path());
+        $this->assertEquals('/projects/' . $project->id, $project->path()); //if we have a project i want to be able to call method path and it should return '/projects/' . $project->id //project.php line 14
 
     }
 

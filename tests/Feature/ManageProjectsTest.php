@@ -9,7 +9,8 @@ use Tests\TestCase;
 class ManageProjectsTest extends TestCase
 {
 
-    use WithFaker, RefreshDatabase;
+    use WithFaker;
+    use RefreshDatabase; //vraca bazu u prethodno stanje
     
     /** @test */
 

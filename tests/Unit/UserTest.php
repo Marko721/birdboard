@@ -19,7 +19,7 @@ class UserTest extends TestCase
 
         $user = factory('App\User')->create(); //given that i have a user
 
-        $this->assertInstanceOf(Collection::class, $user->projects);
+        $this->assertInstanceOf(Collection::class, $user->projects); //a user can access their projects, so that should give us an instance of eloquent collection class
 
 
     }
