@@ -9,4 +9,16 @@ class Task extends Model
     
     protected $guarded = [];
 
+    public function project() {
+
+        return $this->belongsTo('App\Project');
+
+    }
+
+    public function path() {
+
+        return "/projects/{$this->project->id}/tasks/{$this->id}";
+
+    }
+
 }
