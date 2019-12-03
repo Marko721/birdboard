@@ -64,12 +64,19 @@
                         @csrf
                         @method('PATCH')
 
-                        <input type="hidden" name="title" value="{{ $project->title }}">
-                        <input type="hidden" name="description" value="{{ $project->description }}">
-
                         <textarea name="notes" class="card w-full" style="min-height: 200px">{{ $project->notes }}</textarea>
                         <button type="submit" class="button mt-3">Save</button>
                     </form>
+                    
+                    @if ($errors->any())
+                        <div class="field mt-6">
+
+                            @foreach ($errors->all() as $error)
+                                <li class="text-sm text-red">{{ $error }}</li>
+                            @endforeach
+
+                        </div>
+                    @endif
 
                 </div>
             </div>
