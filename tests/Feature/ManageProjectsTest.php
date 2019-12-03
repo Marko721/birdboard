@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Project;
+use Facades\Tests\Setup\ProjectFactory;
 
 class ManageProjectsTest extends TestCase
 {
@@ -50,9 +51,9 @@ class ManageProjectsTest extends TestCase
 
         ];
 
-        $response = $this->post('/projects', $attributes); // if i try to create a new project
-        $project = Project::where($attributes)->first(); 
-        $response->assertRedirect($project->path()); // assert im being redirected to project page
+        $response = $this->post('/projects', $attributes); // if i try to create a new project with the given attributes
+        $project = Project::where($attributes)->first(); // find that project and store it in $project variable
+        $response->assertRedirect($project->path()); // assert im being redirected to that newly created project page
 
         $this->assertDatabaseHas('projects', $attributes); // and project was saved to the database
 
@@ -68,17 +69,21 @@ class ManageProjectsTest extends TestCase
 
     public function a_user_can_update_a_project() {
 
-        $this->signIn(); // sign in a user
+        $project = ProjectFactory::create();
 
-        $this->withoutExceptionHandling();
+        $this->actingAs($project->owner)
+            ->patch($project->path(), $attributes = ['notes' => 'Changed'])
+            ->assertRedirect($project->path());
 
-        $project = factory('App\Project')->create(['owner_id' => auth()->id()]); // give that user a project
+        $this->assertDatabaseHas('projects', $attributes);
 
-        $this->patch($project->path(), [ // try to hit the endpoint to update a project and pass through the notes
-            'notes' => 'Changed'
-        ])->assertRedirect($project->path());
-
-        $this->assertDatabaseHas('projects', ['notes' => 'Changed']); // if we did everything correctly the projects table should be updated
+        // $this->signIn(); // sign in a user
+        // $this->withoutExceptionHandling();
+        // $project = factory('App\Project')->create(['owner_id' => auth()->id()]); // give that user a project
+        // $this->patch($project->path(), [ // try to hit the endpoint to update a project and pass through the notes
+        //     'notes' => 'Changed'
+        // ])->assertRedirect($project->path());
+        // $this->assertDatabaseHas('projects', ['notes' => 'Changed']); // if we did everything correctly the projects table should be updated
 
     }
 
@@ -86,16 +91,21 @@ class ManageProjectsTest extends TestCase
 
     public function a_user_can_view_their_project() {
 
-        $this->signIn();
+        $project = ProjectFactory::create();
 
-        $this->withoutExceptionHandling();
+        $this->actingAs($project->owner)
+            ->get($project->path())
+            ->assertSee($project->title)
+            ->assertSee($project->description);
 
-        $project = factory('App\Project')->create(['owner_id' => auth()->id()]);
 
-        $this->get($project->path())->assertSee($project->title)->assertSee($project->description); //$project->path() je ustvari '/projects/{$project->id}
-        // $this->get('/projects/' . $project->id)
-        //     ->assertSee($project->title)
-        //     ->assertSee($project->description);
+        // $this->signIn();
+        // $this->withoutExceptionHandling();
+        // $project = factory('App\Project')->create(['owner_id' => auth()->id()]);
+        // $this->get($project->path())->assertSee($project->title)->assertSee($project->description); //$project->path() je ustvari '/projects/{$project->id}
+        // // $this->get('/projects/' . $project->id)
+        // //     ->assertSee($project->title)
+        // //     ->assertSee($project->description);
 
     }
 
@@ -119,7 +129,7 @@ class ManageProjectsTest extends TestCase
 
         $project = factory('App\Project')->create();
 
-        $this->patch($project->path(), [])->assertStatus(403);
+        $this->patch($project->path())->assertStatus(403);
 
     }
 

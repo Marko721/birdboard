@@ -10,7 +10,13 @@ abstract class TestCase extends BaseTestCase
 
     protected function signIn($user = null) { // we accept the user but dont require one
 
-        return $this->actingAs($user ?: factory('App\User')->create()); // given the user or there is no user we will make one
+        //return $this->actingAs($user ?: factory('App\User')->create()); // given the user or there is no user we will make one
+
+        $user = $user ?: factory('App\User')->create();
+
+        $this->actingAs($user);
+
+        return $user;
 
     }
 
