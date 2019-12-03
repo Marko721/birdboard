@@ -24,12 +24,10 @@ class ManageProjectsTest extends TestCase
 
         $this->get('/projects')->assertRedirect('login'); // if you try to access the dashboard or index as guest of all projects you should be redirected
         $this->get('/projects/create')->assertRedirect('login'); // if you try to access the create project page as guest you should be redirected
+        $this->get($project->path() . '/edit')->assertRedirect('login'); // if you try to edit post as guest you should be redirected
         $this->post('/projects', $project->toArray())->assertRedirect('login'); // if you try to persist new project to the database as guest you should be redirected
         $this->get($project->path())->assertRedirect('login'); // if you try to access the project specifically as guest you should be redirected
 
-        
-
-        $this->get($project->path())->assertRedirect('login');
 
     } 
 
@@ -72,8 +70,10 @@ class ManageProjectsTest extends TestCase
         $project = ProjectFactory::create();
 
         $this->actingAs($project->owner)
-            ->patch($project->path(), $attributes = ['notes' => 'Changed'])
+            ->patch($project->path(), $attributes = [ 'title' => 'Changed', 'description' => 'Changed', 'notes' => 'Changed'])
             ->assertRedirect($project->path());
+
+        $this->get($project->path() . '/edit')->assertStatus(200); 
 
         $this->assertDatabaseHas('projects', $attributes);
 

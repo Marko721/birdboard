@@ -10,7 +10,7 @@
                 <a href="/projects" class="text-grey text-sm font-normal no-underline"> My Projects </a> / {{ $project->title }}
             </p>
     
-            <a href="/projects/create" class="button">New Project</a>
+            <a href="{{ $project->path() . '/edit'}} " class="button">Edit Project</a>
     
         </div>
     
@@ -64,6 +64,9 @@
                         @csrf
                         @method('PATCH')
 
+                        <input type="hidden" name="title" value="{{ $project->title }}">
+                        <input type="hidden" name="description" value="{{ $project->description }}">
+
                         <textarea name="notes" class="card w-full" style="min-height: 200px">{{ $project->notes }}</textarea>
                         <button type="submit" class="button mt-3">Save</button>
                     </form>
@@ -71,7 +74,7 @@
                 </div>
             </div>
 
-            <div class="lg:w-1/4 px-3">
+            <div class="lg:w-1/4 px-3 mt-8">
                     
                 @include('projects.card')
 
